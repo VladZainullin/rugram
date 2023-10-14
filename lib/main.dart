@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
@@ -32,8 +34,30 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
-  void _incrementCounter() {
-    final dio = Dio();
+  Future<void> _incrementCounter() async {
+    final dio = Dio(
+      BaseOptions(
+        baseUrl: 'https://dummyapi.io/data/v1/',
+        headers: {
+          'app-id': '652a56c27041f5843719941b',
+        },
+      ),
+    );
+
+    // dio.get('/post')..then(
+    //       (value) => log(
+    //         value.toString(),
+    //       ),
+    //     )..onError((error, stackTrace) => null)..whenComplete(() => null);
+
+    try {
+      final response = await dio.get('/post');
+      // final response = await dio.get('/pos');
+
+      log(response.toString());
+    } on DioException catch (e) {
+      log(e.toString());
+    }
   }
 
   @override
