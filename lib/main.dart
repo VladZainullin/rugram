@@ -3,6 +3,8 @@ import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
+import 'domain/models/post_preview.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -64,27 +66,78 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        leading: Icon(Icons.add),
+        title: Text('AppBar'),
+        actions: [
+          Icon(Icons.add_card_outlined),
+          Icon(Icons.read_more),
+          Icon(Icons.read_more),
+          Icon(Icons.read_more),
+        ],
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
+      body: PostPreviewCard(
+        postPreview: PostPreview(
+          id: 'asds',
+          text: 'asdasdasdasdasd',
+          image: 'hasdjhahsdhjasd',
+          likes: 3,
+          tags: ['asdasd', 'asdasd'],
+          publishDate: '11.11.11',
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+}
+
+class PostPreviewCard extends StatelessWidget {
+  final PostPreview postPreview;
+
+  const PostPreviewCard({
+    required this.postPreview,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    width: 50,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      color: Colors.green,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Name',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text('LastName'),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              Icon(Icons.more_horiz),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
