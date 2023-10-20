@@ -1,33 +1,33 @@
 import 'package:equatable/equatable.dart';
-import 'package:rugram/domain/models/user_preview.dart';
 
-class PostPreview extends Equatable {
-  final String id;
+class PostCreate extends Equatable {
+  /// length: 6-50, preview only
   final String text;
+
+  /// url
   final String image;
+
+  /// init value: 0
   final int likes;
   final List<String> tags;
-  final String publishDate;
-  final UserPreview owner;
 
-  const PostPreview({
-    required this.id,
+  /// User id
+  final String owner;
+
+  const PostCreate({
     required this.text,
     required this.image,
     required this.likes,
     required this.tags,
-    required this.publishDate,
     required this.owner,
   });
 
   @override
   List<Object?> get props => [
-        id,
         text,
         image,
         likes,
         tags,
-        publishDate,
         owner,
       ];
 }
