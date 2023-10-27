@@ -12,8 +12,11 @@ class PostDataSource {
 
   PostDataSource(this.dio);
 
-  Future<ListModel<PostPreview>> getPosts() async {
-    final result = await dio.get('/post');
+  Future<ListModel<PostPreview>> getPosts({int? page}) async {
+    final result = await dio.get(
+      '/post',
+      queryParameters: {'page': page},
+    );
 
     final model = source_source_list_model.ListModel.fromJson(result.data)
         .toEntity<PostPreview>(

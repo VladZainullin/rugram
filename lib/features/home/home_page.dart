@@ -1,10 +1,8 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:rugram/data/remote_data_sources/post/post_data_source.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'widgets/post_previe_card.dart';
+import 'bloc/posts_cubit.dart';
+import 'widgets/post_preview_card.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -14,32 +12,61 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  late final ScrollController scrollController;
+  late final PostsCubit postsCubit;
+
+  @override
+  void initState() {
+    scrollController = ScrollController()..addListener(listenScroll);
+    postsCubit = PostsCubit(context.read())..init();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: FutureBuilder(
-        future: context.read<PostDataSource>().getPosts(),
-        builder: (context, snapshot) {
-          final posts = snapshot.data?.data;
-
-          if (posts == null) {
-            return const SizedBox.shrink();
-          }
-
-          return ListView.builder(
-            itemCount: posts.length,
-            itemBuilder: (context, index) {
-              return Padding(
-                padding: EdgeInsets.only(top: index == 0 ? 0 : 24),
-                child: PostPreviewCard(
-                  postPreview: posts[index],
+      body: BlocBuilder<PostsCubit, PostsState>(
+        bloc: postsCubit,
+        builder: (context, state) {
+          return switch (state) {
+            PostsLoadedState() => ListView.builder(
+                controller: scrollController,
+                itemCount: state.postsInfo.data.length,
+                prototypeItem: Padding(
+                  padding: const EdgeInsets.only(top: 24),
+                  child: PostPreviewCard(
+                    postPreview: state.postsInfo.data.first,
+                  ),
                 ),
-              );
-            },
-          );
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.only(top: 24),
+                    child: PostPreviewCard(
+                      postPreview: state.postsInfo.data[index],
+                    ),
+                  );
+                },
+              ),
+            _ => const Center(child: CircularProgressIndicator()),
+          };
         },
       ),
     );
+  }
+
+  Future<void> listenScroll() async {
+    final isPageEnd = scrollController.offset + 150 >
+        scrollController.position.maxScrollExtent;
+
+    if (isPageEnd) {
+      await postsCubit.nextPage();
+    }
   }
 }
