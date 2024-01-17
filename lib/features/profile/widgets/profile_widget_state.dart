@@ -25,11 +25,12 @@ class ProfileWidgetState extends State<ProfileWidget> {
           children: [
             GestureDetector(
                 onTap: () {
-                  pickImage(context);
+                  pickCameraImage(context);
+                  Navigator.pop(context);
                 },
                 child: ClipOval(
                     child: Image.network(
-                      photo,
+                  photo,
                   height: 80,
                   width: 80,
                   fit: BoxFit.cover,
@@ -128,44 +129,6 @@ class ProfileWidgetState extends State<ProfileWidget> {
     setState(() {});
   }
 
-  Future pickGalleryImage() async {
-    TextEditingController imageUrlController = TextEditingController();
-
-    await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Добавить изображение'),
-          content: TextFormField(
-            controller: imageUrlController,
-            decoration:
-                const InputDecoration(labelText: 'Ссылка на изображение'),
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Отмена'),
-            ),
-            TextButton(
-              onPressed: () {
-                if (imageUrlController.text.isNotEmpty) {
-                  Navigator.pop(context, imageUrlController.text);
-                }
-              },
-              child: const Text('Добавить'),
-            ),
-          ],
-        );
-      },
-    ).then((imageUrl) {
-      if (imageUrl != null && imageUrl.isNotEmpty) {
-        setState(() {
-          updateUserPhoto(photo: imageUrl);
-        });
-      }
-    });
-  }
-
   Future pickCameraImage(BuildContext context) async {
     final pickedFile =
         await picker.pickImage(source: ImageSource.camera, imageQuality: 100);
@@ -173,41 +136,5 @@ class ProfileWidgetState extends State<ProfileWidget> {
       image = XFile(pickedFile.path);
       updateUserPhoto(photo: image!.path);
     }
-  }
-
-  void pickImage(context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          content: Container(
-            height: 100,
-            child: Column(
-              children: [
-                ListTile(
-                  onTap: () {
-                    pickCameraImage(context);
-                    Navigator.pop(context);
-                  },
-                  leading: const Icon(
-                    Icons.camera,
-                    color: Colors.black,
-                  ),
-                  title: Text('Камера'),
-                ),
-                ListTile(
-                  onTap: pickGalleryImage,
-                  leading: const Icon(
-                    Icons.image,
-                    color: Colors.black,
-                  ),
-                  title: Text('Галерея'),
-                )
-              ],
-            ),
-          ),
-        );
-      },
-    );
   }
 }

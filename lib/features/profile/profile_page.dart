@@ -155,18 +155,6 @@ class _ProfilePageState extends State<ProfilePage>
                           _ => const Center(child: CircularProgressIndicator()),
                         };
                       }),
-                  // GridView.count(
-                  //   scrollDirection: Axis.vertical,
-                  //   shrinkWrap: true,
-                  //   primary: false,
-                  //   padding: const EdgeInsets.all(4),
-                  //   crossAxisSpacing: 2,
-                  //   mainAxisSpacing: 2,
-                  //   crossAxisCount: 3,
-                  //   children: imageUrls.map((imageUrl) {
-                  //     return buildImageContainer(imageUrl);
-                  //   }).toList(),
-                  // ),
                   const Center(
                     child: Column(
                       children: [
