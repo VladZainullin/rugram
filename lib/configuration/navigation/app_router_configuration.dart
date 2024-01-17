@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:rugram/features/home/home_page.dart';
-import 'package:rugram/features/navigation/main_screen.dart';
-
+import '../../features/home/home_page.dart';
+import '../../features/navigation/main_screen.dart';
+import '../../features/profile/profile_page.dart';
 import 'app_routes.dart';
 
 class AppRouterConfiguration {
@@ -37,7 +37,7 @@ class AppRouterConfiguration {
             GoRoute(
               name: AppRoutes.profile.name,
               path: AppRoutes.profile.path,
-              builder: (context, state) => const Center(child: Text('profile')),
+              builder: (context, state) => const ProfilePage(),
             ),
           ],
         ),
