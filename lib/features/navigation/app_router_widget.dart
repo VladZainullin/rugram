@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:rugram/configuration/navigation/app_roter_configuration.dart';
+import 'package:rugram/configuration/navigation/app_router_configuration.dart';
 
 class AppRouterWidget extends StatefulWidget {
   const AppRouterWidget({super.key});
