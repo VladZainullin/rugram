@@ -5,8 +5,6 @@ class Location extends Equatable {
   final String city;
   final String state;
   final String country;
-
-  /// Valid timezone value ex. +7:00, -1:00
   final String timezone;
 
   const Location({

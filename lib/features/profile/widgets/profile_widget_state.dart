@@ -102,18 +102,7 @@ class ProfileWidgetState extends State<ProfileWidget> {
               ),
             ),
           ],
-        ),
-        const Row(
-          children: [
-            Padding(
-              padding: EdgeInsets.only(left: 8),
-              child: Text(
-                '🌺🌺🌺🌺🌺',
-                style: TextStyle(color: Colors.black),
-              ),
-            ),
-          ],
-        ),
+        )
       ],
     );
   }

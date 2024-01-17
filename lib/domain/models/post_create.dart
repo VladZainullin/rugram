@@ -1,17 +1,10 @@
 import 'package:equatable/equatable.dart';
 
 class PostCreate extends Equatable {
-  /// length: 6-50, preview only
   final String text;
-
-  /// url
   final String image;
-
-  /// init value: 0
   final int likes;
   final List<String> tags;
-
-  /// User id
   final String owner;
 
   const PostCreate({
