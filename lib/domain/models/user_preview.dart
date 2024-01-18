@@ -15,6 +15,8 @@ class UserPreview extends Equatable {
     required this.picture,
   });
 
+  String get fullName => "$firstName $lastName";
+
   @override
   List<Object?> get props => [
         id,
