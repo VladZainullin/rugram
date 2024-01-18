@@ -23,9 +23,10 @@ class ProfileDataSource {
   }
 
   Future<UserPreview> updateProfile(
-      {required String profileId, required String name}) async {
+      {required String profileId, required String name, required, required String surname}) async {
     final result = await dio.put('/user/$profileId', data: {
       'firstName': name,
+      'lastName': surname
     });
 
     var userPreview =
