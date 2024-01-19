@@ -14,7 +14,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage>
     with TickerProviderStateMixin {
-  final String userId = "60d0fe4f5311236168a109ca";
+  final String userId = "60d0fe4f5311236168a109cd";
 
   late final ProfilePageCubit profileCubit;
   late final PostsCubit postsCubit;
