@@ -17,9 +17,6 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   static final navigationRoutes = [
     AppRoutes.home,
-    AppRoutes.search,
-    AppRoutes.video,
-    AppRoutes.cart,
     AppRoutes.profile,
   ];
 
@@ -58,18 +55,6 @@ class _MainScreenState extends State<MainScreen> {
           BottomNavigationBarItem(
             label: '',
             icon: Icon(Icons.home),
-          ),
-          BottomNavigationBarItem(
-            label: '',
-            icon: Icon(Icons.search),
-          ),
-          BottomNavigationBarItem(
-            label: '',
-            icon: Icon(Icons.video_collection),
-          ),
-          BottomNavigationBarItem(
-            label: '',
-            icon: Icon(Icons.shopping_bag_outlined),
           ),
           BottomNavigationBarItem(
             label: '',
