@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:rugram/features/profile/profile_state.dart';
+import 'package:rugram/features/profile/bloc/profile_state.dart';
 
-import '../profile_cubit.dart';
+import '../bloc/profile_cubit.dart';
 
 class EditProfileAlert extends StatelessWidget {
 

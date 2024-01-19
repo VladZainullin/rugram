@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rugram/features/profile/profile_cubit.dart';
-import 'package:rugram/features/profile/profile_state.dart';
+import 'package:rugram/features/profile/bloc/profile_cubit.dart';
+import 'package:rugram/features/profile/bloc/profile_state.dart';
 import 'package:rugram/features/profile/widgets/edit_profile_alert.dart';
 import 'package:rugram/features/profile/widgets/posts_grid.dart';
 import '../../data/remote_data_sources/profile/profile_data_source.dart';

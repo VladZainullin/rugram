@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../data/remote_data_sources/profile/profile_data_source.dart';
+import '../../../data/remote_data_sources/profile/profile_data_source.dart';
 
 sealed class ProfilePageState {
   String fullName();
