@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rugram/features/profile/profile_cubit.dart';
 import 'package:rugram/features/profile/profile_state.dart';
+import 'package:rugram/features/profile/widgets/edit_profile_alert.dart';
+import 'package:rugram/features/profile/widgets/posts_grid.dart';
 import '../../data/remote_data_sources/profile/profile_data_source.dart';
 import '../home/bloc/posts_cubit.dart';
 
@@ -59,11 +61,11 @@ class _ProfilePageState extends State<ProfilePage>
                             GestureDetector(
                                 child: ClipOval(
                                     child: Image.network(
-                                      state.picture(),
-                                      height: 80,
-                                      width: 80,
-                                      fit: BoxFit.cover,
-                                    ))),
+                              state.picture(),
+                              height: 80,
+                              width: 80,
+                              fit: BoxFit.cover,
+                            ))),
                             Padding(
                               padding: const EdgeInsets.only(left: 12),
                               child: Text(
@@ -92,24 +94,10 @@ class _ProfilePageState extends State<ProfilePage>
                                 decoration: BoxDecoration(
                                     color: Colors.grey.shade300,
                                     borderRadius: BorderRadius.circular(8)),
-                                child: InkWell(
-                                  onTap: () => () {
-                                    showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return _editAlertDialog(state, context);
-                                      },
-                                    );
-                                  }(),
-                                  child: const Center(
-                                    child: Text(
-                                      'Редактировать профиль',
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                ),
+                                child: EditProfileAlert(
+                                    state: state,
+                                    userId: userId,
+                                    profileCubit: profileCubit),
                               ),
                             )
                           ],
@@ -117,66 +105,9 @@ class _ProfilePageState extends State<ProfilePage>
                       ],
                     ),
                   ),
-                  _postsGrid(),
+                  PostsGrid(postsCubit: postsCubit),
                 ],
               ));
         });
-  }
-
-  AlertDialog _editAlertDialog(ProfilePageState state, BuildContext context) {
-    return AlertDialog(
-      title: const Text('Редактирование профиля'),
-      content: Column(children: [
-        TextFormField(
-          controller: state.nameController(),
-          decoration: const InputDecoration(labelText: 'Введите имя'),
-        ),
-        TextFormField(
-          controller: state.surnameController(),
-          decoration: const InputDecoration(labelText: 'Введите фамилию'),
-        ),
-      ]),
-      actions: <Widget>[
-        TextButton(
-          onPressed: () {
-            profileCubit.updateAsync(
-                userId: userId,
-                name: state.nameController().text,
-                surname: state.surnameController().text);
-            Navigator.pop(context);
-          },
-          child: const Text('Сохранить'),
-        ),
-      ],
-    );
-  }
-
-  SliverToBoxAdapter _postsGrid() {
-    return SliverToBoxAdapter(
-        child: BlocBuilder<PostsCubit, PostsState>(
-            bloc: postsCubit,
-            builder: (context, state) {
-              return switch (state) {
-                PostsLoadedState() => GridView.builder(
-                    shrinkWrap: true,
-                    itemCount: state.postsInfo.data.length,
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      crossAxisSpacing: 3,
-                      mainAxisSpacing: 3,
-                      childAspectRatio: 1,
-                    ),
-                    itemBuilder: (context, index) {
-                      return Image.network(
-                        state.postsInfo.data[index].image,
-                        width: double.infinity,
-                        height: double.infinity,
-                        fit: BoxFit.cover,
-                      );
-                    }),
-                _ => const Center(child: CircularProgressIndicator()),
-              };
-            }));
   }
 }
