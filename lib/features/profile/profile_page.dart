@@ -179,25 +179,4 @@ class _ProfilePageState extends State<ProfilePage>
               };
             }));
   }
-
-  void showFullScreenImage(String imageUrl) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          child: GestureDetector(
-            onTap: () {
-              Navigator.of(context).pop();
-            },
-            child: Image.network(
-              imageUrl,
-              height: 80,
-              width: 80,
-              fit: BoxFit.cover,
-            ),
-          ),
-        );
-      },
-    );
-  }
 }
