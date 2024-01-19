@@ -68,13 +68,15 @@ class ProfilePageInitialState extends ProfilePageState {
 
 class ProfilePageLoadingState extends ProfilePageState {
   final ProfileDataSource profileDataSource;
-  late UserPreview profile;
+  late UserPreview? profile = null;
 
-  ProfilePageLoadingState({required this.profileDataSource});
+  ProfilePageLoadingState({UserPreview? profile, required this.profileDataSource}){
+    profile = profile;
+  }
 
   @override
   ProfilePageState toLoaded() {
-    return ProfilePageLoadedState(profile: profile, profileDataSource: profileDataSource);
+    return ProfilePageLoadedState(profile: profile!, profileDataSource: profileDataSource);
   }
 
   @override
@@ -84,17 +86,17 @@ class ProfilePageLoadingState extends ProfilePageState {
 
   @override
   String fullName() {
-    return "";
+    return profile?.fullName ?? "";
   }
 
   @override
   TextEditingController nameController() {
-    return TextEditingController(text: "");
+    return TextEditingController(text: profile?.firstName ?? "");
   }
 
   @override
   TextEditingController surnameController() {
-    return TextEditingController(text: "");
+    return TextEditingController(text: profile?.lastName ?? "");
   }
 
   @override
@@ -122,7 +124,7 @@ class ProfilePageLoadedState extends ProfilePageState {
 
   @override
   ProfilePageState toLoading() {
-    return ProfilePageLoadingState(profileDataSource: profileDataSource);
+    return ProfilePageLoadingState(profile: profile, profileDataSource: profileDataSource);
   }
 
   @override
@@ -147,9 +149,8 @@ class ProfilePageLoadedState extends ProfilePageState {
   }
 
   @override
-  Future<void> updateAsync({required String userId, required String name, required String surname}) {
-    // TODO: implement updateAsync
+  Future<void> updateAsync({required String userId, required String name, required String surname}) async {
+    // TODO: implement initAsync
     throw UnimplementedError();
   }
-
 }
