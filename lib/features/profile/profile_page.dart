@@ -25,7 +25,8 @@ class _ProfilePageState extends State<ProfilePage>
     profileCubit = ProfilePageCubit(
         profileDataSource: context.read<ProfileDataSource>(),
         nameController: TextEditingController(text: "..."),
-        surnameController: TextEditingController(text: "..."))..initAsync(userId: userId);
+        surnameController: TextEditingController(text: "..."))
+      ..initAsync(userId: userId);
 
     super.initState();
   }
@@ -55,6 +56,14 @@ class _ProfilePageState extends State<ProfilePage>
                       children: [
                         Row(
                           children: [
+                            GestureDetector(
+                                child: ClipOval(
+                                    child: Image.network(
+                                      state.picture(),
+                                      height: 80,
+                                      width: 80,
+                                      fit: BoxFit.cover,
+                                    ))),
                             Padding(
                               padding: const EdgeInsets.only(left: 12),
                               child: Text(
@@ -88,40 +97,7 @@ class _ProfilePageState extends State<ProfilePage>
                                     showDialog(
                                       context: context,
                                       builder: (BuildContext context) {
-                                        return AlertDialog(
-                                          title: const Text(
-                                              'Редактирование профиля'),
-                                          content: Column(children: [
-                                            TextFormField(
-                                              controller:
-                                                  state.nameController(),
-                                              decoration: const InputDecoration(
-                                                  labelText: 'Введите имя'),
-                                            ),
-                                            TextFormField(
-                                              controller:
-                                                  state.surnameController(),
-                                              decoration: const InputDecoration(
-                                                  labelText: 'Введите фамилию'),
-                                            ),
-                                          ]),
-                                          actions: <Widget>[
-                                            TextButton(
-                                              onPressed: () {
-                                                profileCubit.updateAsync(
-                                                    userId: userId,
-                                                    name: state
-                                                        .nameController()
-                                                        .text,
-                                                    surname: state
-                                                        .surnameController()
-                                                        .text);
-                                                Navigator.pop(context);
-                                              },
-                                              child: const Text('Сохранить'),
-                                            ),
-                                          ],
-                                        );
+                                        return _editAlertDialog(state, context);
                                       },
                                     );
                                   }(),
@@ -141,36 +117,67 @@ class _ProfilePageState extends State<ProfilePage>
                       ],
                     ),
                   ),
-                  SliverToBoxAdapter(
-                      child: BlocBuilder<PostsCubit, PostsState>(
-                          bloc: postsCubit,
-                          builder: (context, state) {
-                            return switch (state) {
-                              PostsLoadedState() => GridView.builder(
-                                  shrinkWrap: true,
-                                  itemCount: state.postsInfo.data.length,
-                                  gridDelegate:
-                                      const SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 3,
-                                    crossAxisSpacing: 3,
-                                    mainAxisSpacing: 3,
-                                    childAspectRatio: 1,
-                                  ),
-                                  itemBuilder: (context, index) {
-                                    return Image.network(
-                                      state.postsInfo.data[index].image,
-                                      width: double.infinity,
-                                      height: double.infinity,
-                                      fit: BoxFit.cover,
-                                    );
-                                  }),
-                              _ => const Center(
-                                  child: CircularProgressIndicator()),
-                            };
-                          })),
+                  _postsGrid(),
                 ],
               ));
         });
+  }
+
+  AlertDialog _editAlertDialog(ProfilePageState state, BuildContext context) {
+    return AlertDialog(
+      title: const Text('Редактирование профиля'),
+      content: Column(children: [
+        TextFormField(
+          controller: state.nameController(),
+          decoration: const InputDecoration(labelText: 'Введите имя'),
+        ),
+        TextFormField(
+          controller: state.surnameController(),
+          decoration: const InputDecoration(labelText: 'Введите фамилию'),
+        ),
+      ]),
+      actions: <Widget>[
+        TextButton(
+          onPressed: () {
+            profileCubit.updateAsync(
+                userId: userId,
+                name: state.nameController().text,
+                surname: state.surnameController().text);
+            Navigator.pop(context);
+          },
+          child: const Text('Сохранить'),
+        ),
+      ],
+    );
+  }
+
+  SliverToBoxAdapter _postsGrid() {
+    return SliverToBoxAdapter(
+        child: BlocBuilder<PostsCubit, PostsState>(
+            bloc: postsCubit,
+            builder: (context, state) {
+              return switch (state) {
+                PostsLoadedState() => GridView.builder(
+                    shrinkWrap: true,
+                    itemCount: state.postsInfo.data.length,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      crossAxisSpacing: 3,
+                      mainAxisSpacing: 3,
+                      childAspectRatio: 1,
+                    ),
+                    itemBuilder: (context, index) {
+                      return Image.network(
+                        state.postsInfo.data[index].image,
+                        width: double.infinity,
+                        height: double.infinity,
+                        fit: BoxFit.cover,
+                      );
+                    }),
+                _ => const Center(child: CircularProgressIndicator()),
+              };
+            }));
   }
 
   void showFullScreenImage(String imageUrl) {

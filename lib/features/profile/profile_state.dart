@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-
 import '../../data/remote_data_sources/profile/profile_data_source.dart';
 
 sealed class ProfilePageState {
   String fullName();
+
+  String picture();
 
   TextEditingController nameController();
 
@@ -71,6 +72,11 @@ class ProfilePageInitialState extends ProfilePageState {
     // TODO: implement updateAsync
     throw UnimplementedError();
   }
+
+  @override
+  String picture() {
+    return "...";
+  }
 }
 
 class ProfilePageLoadingState extends ProfilePageState {
@@ -80,9 +86,11 @@ class ProfilePageLoadingState extends ProfilePageState {
   final TextEditingController surnameControllerValue;
 
   late String? fullNameValue;
+  late String? pictureValue;
 
   ProfilePageLoadingState(
       {this.fullNameValue,
+      this.pictureValue,
       required this.nameControllerValue,
       required this.surnameControllerValue,
       required this.profileDataSource});
@@ -91,7 +99,8 @@ class ProfilePageLoadingState extends ProfilePageState {
   ProfilePageState toLoaded() {
     return ProfilePageLoadedState(
         profileDataSource: profileDataSource,
-        fullNameValue: fullNameValue ?? "...",
+        pictureValue: pictureValue!,
+        fullNameValue: fullNameValue!,
         nameControllerValue: nameControllerValue,
         surnameControllerValue: surnameControllerValue);
   }
@@ -121,6 +130,7 @@ class ProfilePageLoadingState extends ProfilePageState {
     final profile = await profileDataSource.getProfileAsync(userId: userId);
 
     fullNameValue = profile.fullName;
+    pictureValue = profile.picture;
     nameControllerValue.text = profile.firstName;
     surnameControllerValue.text = profile.lastName;
   }
@@ -134,13 +144,20 @@ class ProfilePageLoadingState extends ProfilePageState {
         profileId: userId, name: name, surname: surname);
 
     fullNameValue = profile.fullName;
+    pictureValue = profile.picture;
     nameControllerValue.text = profile.firstName;
     surnameControllerValue.text = profile.lastName;
+  }
+
+  @override
+  String picture() {
+    return pictureValue ?? "";
   }
 }
 
 class ProfilePageLoadedState extends ProfilePageState {
   final String fullNameValue;
+  final String pictureValue;
 
   final TextEditingController nameControllerValue;
   final TextEditingController surnameControllerValue;
@@ -150,6 +167,7 @@ class ProfilePageLoadedState extends ProfilePageState {
   ProfilePageLoadedState(
       {required this.profileDataSource,
       required this.fullNameValue,
+      required this.pictureValue,
       required this.nameControllerValue,
       required this.surnameControllerValue});
 
@@ -195,5 +213,10 @@ class ProfilePageLoadedState extends ProfilePageState {
       required String surname}) async {
     // TODO: implement initAsync
     throw UnimplementedError();
+  }
+
+  @override
+  String picture() {
+    return pictureValue;
   }
 }
