@@ -18,7 +18,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     scrollController = ScrollController()..addListener(listenScroll);
-    postsCubit = PostsCubit(context.read())..init();
+    postsCubit = PostsCubit(context.read())..initAsync();
     super.initState();
   }
 
@@ -66,7 +66,7 @@ class _MyHomePageState extends State<MyHomePage> {
         scrollController.position.maxScrollExtent;
 
     if (isPageEnd) {
-      await postsCubit.nextPage();
+      await postsCubit.nextPageAsync();
     }
   }
 }

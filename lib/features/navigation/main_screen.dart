@@ -81,6 +81,6 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   void onChangePage(index) {
-    context.goNamed(navigationRoutes[index].name);
+    context.goNamed(navigationRoutes[index].fullName);
   }
 }
