@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../data/remote_data_sources/profile/profile_data_source.dart';
-import '../../domain/models/user_preview.dart';
 
 sealed class ProfilePageState {
   String fullName();
@@ -12,10 +11,8 @@ sealed class ProfilePageState {
 
   Future<void> initAsync({required String userId});
 
-  Future<void> updateAsync({
-    required String userId,
-    required String name,
-    required String surname});
+  Future<void> updateAsync(
+      {required String userId, required String name, required String surname});
 
   ProfilePageState toLoading();
 
@@ -25,7 +22,13 @@ sealed class ProfilePageState {
 class ProfilePageInitialState extends ProfilePageState {
   final ProfileDataSource profileDataSource;
 
-  ProfilePageInitialState({required this.profileDataSource});
+  final TextEditingController nameControllerValue;
+  final TextEditingController surnameControllerValue;
+
+  ProfilePageInitialState(
+      {required this.profileDataSource,
+      required this.nameControllerValue,
+      required this.surnameControllerValue});
 
   @override
   ProfilePageState toLoaded() {
@@ -35,7 +38,10 @@ class ProfilePageInitialState extends ProfilePageState {
 
   @override
   ProfilePageState toLoading() {
-    return ProfilePageLoadingState(profileDataSource: profileDataSource);
+    return ProfilePageLoadingState(
+        profileDataSource: profileDataSource,
+        nameControllerValue: nameControllerValue,
+        surnameControllerValue: surnameControllerValue);
   }
 
   @override
@@ -51,16 +57,17 @@ class ProfilePageInitialState extends ProfilePageState {
 
   @override
   TextEditingController nameController() {
-    return TextEditingController(text: "...");
+    return nameControllerValue;
   }
 
   @override
   TextEditingController surnameController() {
-    return TextEditingController(text: "...");
+    return surnameControllerValue;
   }
 
   @override
-  Future<void> updateAsync({required String userId, required String name, required String surname}) {
+  Future<void> updateAsync(
+      {required String userId, required String name, required String surname}) {
     // TODO: implement updateAsync
     throw UnimplementedError();
   }
@@ -68,15 +75,25 @@ class ProfilePageInitialState extends ProfilePageState {
 
 class ProfilePageLoadingState extends ProfilePageState {
   final ProfileDataSource profileDataSource;
-  late UserPreview? profile = null;
 
-  ProfilePageLoadingState({UserPreview? profile, required this.profileDataSource}){
-    profile = profile;
-  }
+  final TextEditingController nameControllerValue;
+  final TextEditingController surnameControllerValue;
+
+  late String? fullNameValue;
+
+  ProfilePageLoadingState(
+      {this.fullNameValue,
+      required this.nameControllerValue,
+      required this.surnameControllerValue,
+      required this.profileDataSource});
 
   @override
   ProfilePageState toLoaded() {
-    return ProfilePageLoadedState(profile: profile!, profileDataSource: profileDataSource);
+    return ProfilePageLoadedState(
+        profileDataSource: profileDataSource,
+        fullNameValue: fullNameValue ?? "...",
+        nameControllerValue: nameControllerValue,
+        surnameControllerValue: surnameControllerValue);
   }
 
   @override
@@ -86,36 +103,55 @@ class ProfilePageLoadingState extends ProfilePageState {
 
   @override
   String fullName() {
-    return profile?.fullName ?? "";
+    return fullNameValue ?? "...";
   }
 
   @override
   TextEditingController nameController() {
-    return TextEditingController(text: profile?.firstName ?? "");
+    return nameControllerValue;
   }
 
   @override
   TextEditingController surnameController() {
-    return TextEditingController(text: profile?.lastName ?? "");
+    return nameControllerValue;
   }
 
   @override
   Future<void> initAsync({required String userId}) async {
-    profile = await profileDataSource.getProfileAsync(userId: userId);
+    final profile = await profileDataSource.getProfileAsync(userId: userId);
+
+    fullNameValue = profile.fullName;
+    nameControllerValue.text = profile.firstName;
+    surnameControllerValue.text = profile.lastName;
   }
 
   @override
-  Future<void> updateAsync({required String userId, required String name, required String surname}) async {
-    profile = await profileDataSource.updateProfileAsync(profileId: userId, name: name, surname: surname);
+  Future<void> updateAsync(
+      {required String userId,
+      required String name,
+      required String surname}) async {
+    final profile = await profileDataSource.updateProfileAsync(
+        profileId: userId, name: name, surname: surname);
+
+    fullNameValue = profile.fullName;
+    nameControllerValue.text = profile.firstName;
+    surnameControllerValue.text = profile.lastName;
   }
 }
 
 class ProfilePageLoadedState extends ProfilePageState {
+  final String fullNameValue;
 
-  final UserPreview profile;
+  final TextEditingController nameControllerValue;
+  final TextEditingController surnameControllerValue;
+
   final ProfileDataSource profileDataSource;
 
-  ProfilePageLoadedState({required this.profile, required this.profileDataSource});
+  ProfilePageLoadedState(
+      {required this.profileDataSource,
+      required this.fullNameValue,
+      required this.nameControllerValue,
+      required this.surnameControllerValue});
 
   @override
   ProfilePageState toLoaded() {
@@ -124,12 +160,16 @@ class ProfilePageLoadedState extends ProfilePageState {
 
   @override
   ProfilePageState toLoading() {
-    return ProfilePageLoadingState(profile: profile, profileDataSource: profileDataSource);
+    return ProfilePageLoadingState(
+      profileDataSource: profileDataSource,
+      nameControllerValue: nameControllerValue,
+      surnameControllerValue: surnameControllerValue,
+    );
   }
 
   @override
   String fullName() {
-    return profile.fullName;
+    return fullNameValue;
   }
 
   @override
@@ -140,16 +180,19 @@ class ProfilePageLoadedState extends ProfilePageState {
 
   @override
   TextEditingController nameController() {
-    return TextEditingController(text: profile.firstName);
+    return nameControllerValue;
   }
 
   @override
   TextEditingController surnameController() {
-    return TextEditingController(text: profile.lastName);
+    return surnameControllerValue;
   }
 
   @override
-  Future<void> updateAsync({required String userId, required String name, required String surname}) async {
+  Future<void> updateAsync(
+      {required String userId,
+      required String name,
+      required String surname}) async {
     // TODO: implement initAsync
     throw UnimplementedError();
   }

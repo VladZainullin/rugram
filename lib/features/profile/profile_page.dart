@@ -14,7 +14,6 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage>
     with TickerProviderStateMixin {
-
   final String userId = "60d0fe4f5311236168a109ca";
 
   late final ProfilePageCubit profileCubit;
@@ -23,7 +22,10 @@ class _ProfilePageState extends State<ProfilePage>
   @override
   void initState() {
     postsCubit = PostsCubit(context.read())..initWithTagAsync(tag: "person");
-    profileCubit = ProfilePageCubit(profileDataSource: context.read<ProfileDataSource>())..initAsync(userId: userId);
+    profileCubit = ProfilePageCubit(
+        profileDataSource: context.read<ProfileDataSource>(),
+        nameController: TextEditingController(text: "..."),
+        surnameController: TextEditingController(text: "..."))..initAsync(userId: userId);
 
     super.initState();
   }
